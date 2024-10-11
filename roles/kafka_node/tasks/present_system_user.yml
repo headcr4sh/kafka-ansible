@@ -1,0 +1,26 @@
+---
+- name: 'system_user | Create System Group'
+  tags:
+    - kafka_system_user
+    - kafka_system_group
+  ansible.builtin.group:
+    name: "{{ kafka_system_group_name }}"
+    state: present
+    system: true
+  register: kafka_system_group
+
+- name: 'system_user | Create System User'
+  tags:
+    - kafka_system_user
+  ansible.builtin.user:
+    append: false
+    comment: Apache Kafka
+    create_home: true
+    group: "{{ kafka_system_group_name }}"
+    home: "{{ kafka_installation_prefix }}"
+    name: "{{ kafka_system_user_name }}"
+    shell: /bin/false
+    state: present
+    system: true
+  register: kafka_system_user
+...

@@ -1,0 +1,15 @@
+---
+argument_specs:
+  main:
+    short_description: Installs the Redpanda console, a Kafka web frontend.
+    options:
+      redpanda_console_state:
+        description: Desired state of the Redpanda console installation
+        type: str
+        choices:
+          - present
+          - absent
+      redpanda_console_version:
+        description: Version of Redpanda Console to Install
+        type: str
+...

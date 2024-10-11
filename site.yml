@@ -1,0 +1,9 @@
+---
+- name: Apache Kafka
+  become: true
+  become_user: root
+  hosts: nodes
+  roles:
+    - role: kafka_node
+    - role: redpanda_console
+  strategy: ansible.builtin.linear

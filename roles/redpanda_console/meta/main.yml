@@ -1,0 +1,29 @@
+---
+galaxy_info:
+  author: Benjamin P. Jung
+  namespace: qvest-digital
+  role_name: redpanda_console
+  description: Red Panda Console installation for RHEL/CentOS and Debian/Ubuntu
+  license: MIT
+  min_ansible_version: 2.14.0
+  platforms:
+    - name: EL
+      versions:
+        - '8'
+        - '9'
+    - name: Debian
+      versions:
+        - bookworm
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+  galaxy_tags:
+    - console
+    - kafka
+    - redpanda
+    - ui
+    - web-frontend
+
+dependencies: []
+...

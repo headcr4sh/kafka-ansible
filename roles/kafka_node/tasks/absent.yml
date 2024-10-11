@@ -1,0 +1,49 @@
+---
+- name: Stop systemd service
+  ansible.builtin.systemd_service:
+    no_block: false
+    scope: system
+    name: kafka
+    state: stopped
+  register: kafka_systemd_service_stop
+  failed_when: >-
+    kafka_systemd_service_stop is failed
+    and 'Could not find the requested service' not in kafka_systemd_service_stop.msg
+
+- name: Delete systemd service unit /lib/systemd/system/kafka.service
+  ansible.builtin.file:
+    dest: /lib/systemd/system/kafka.service
+    state: absent
+  notify:
+    - Reload systemd daemon
+
+- name: Delete systemd service environment file {{ kafka_systemd_environment_file_path }}
+  ansible.builtin.file:
+    dest: "{{ kafka_systemd_environment_file_path }}"
+    state: absent
+
+- name: Delete configuration files
+  ansible.builtin.file:
+    dest: "{{ kafka_config_dir_path }}"
+    state: absent
+
+- name: Delete system user {{ kafka_system_user_name }}
+  ansible.builtin.user:
+    name: "{{ kafka_system_user_name }}"
+    state: absent
+
+- name: Delete system group {{ kafka_system_group_name }}
+  ansible.builtin.group:
+    name: "{{ kafka_system_group_name }}"
+    state: absent
+
+- name: Delete installed Kafka package
+  ansible.builtin.file:
+    dest: "{{ kafka_installation_prefix }}"
+    state: absent
+
+- name: Delete cached Kafka package downloads
+  ansible.builtin.file:
+    dest: "{{ kafka_cache_download_path }}"
+    state: absent
+...

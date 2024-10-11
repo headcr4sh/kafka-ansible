@@ -1,0 +1,5 @@
+---
+redpanda_console_state: present
+redpanda_console_cache_download_path: /var/tmp/ansible-downloads/redpanda-console
+redpanda_console_version: "2.7.2"
+...
