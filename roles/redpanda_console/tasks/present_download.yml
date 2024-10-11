@@ -1,0 +1,26 @@
+---
+- name: download | Create directory {{ redpanda_console_cache_download_path }}
+  ansible.builtin.file:
+    path: "{{ redpanda_console_cache_download_path }}"
+    owner: root
+    group: root
+    mode: u=rw-x+X,g=r-x+X,o=r-x+X
+    recurse: false
+    state: directory
+  register: redpanda_console_cache_download_directory
+
+- name: download | Check if Red Panda Console package checksum exists
+  ansible.builtin.stat:
+    path: "{{ redpanda_console_cache_download_directory.path }}/redpanda-console-{{ redpanda_console_version }}.checksums.txt"
+  register:
+    redpanda_console_checksums_file_stat
+
+- name: download | GET Red Panda Console release packages checksums
+  ansible.builtin.get_url:
+    url: "{{ redpanda_console_release_checksums_url }}"
+    dest: "{{ redpanda_console_cache_download_path }}"
+    mode: u=rw-x,g=rw-x,o=r-x
+    validate_certs: true
+  when: >-
+    (not redpanda_console_checksums_file_stat.stat.exists)
+...

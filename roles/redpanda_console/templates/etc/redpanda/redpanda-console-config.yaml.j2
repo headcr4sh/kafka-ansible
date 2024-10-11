@@ -1,0 +1,31 @@
+---
+# See: https://docs.redpanda.com/current/console/config/configure-console/
+kafka:
+  # Brokers is a list of bootstrap servers with
+  # port (for example "localhost:9092").
+  brokers:
+    - "localhost:9092" # TODO Make this configurable
+{% if redpanda_console_kafka_rack_id is defined %}
+  # In multi-zone Kafka clusters, you can reduce traffic costs
+  # by consuming messages from replica brokers in the same zone.
+  rackId: {{ redpanda_console_kafka_rack_id | ansible.builtin.to_json }}
+{% endif %}
+redpanda:
+  adminApi:
+    enabled: {{ redpanda_console_redpanda_admin_api_enabled | ansible.builtin.to_json }}
+{% if redpanda_license is defined %}
+  license: {{ redpanda_license | ansible.builtin.to_json }}
+{% endif %}
+
+# Prefix for all exported Prometheus metrics.
+metricsNamespace: {{ redpanda_console_metrics_namespace | ansible.builtin.to_json }}
+
+logger:
+  # Valid values are: debug, info, warn, error, fatal.
+  level: {{ redpanda_console_logger_level | ansible.builtin.to_json }}
+
+# Analytics configures the telemetry service that sends anonymized usage statistics to Redpanda.
+# Redpanda uses these statistics to evaluate feature usage.
+analytics:
+  enabled: {{ redpanda_console_analytics_enabled | ansible.builtin.to_json }}
+...

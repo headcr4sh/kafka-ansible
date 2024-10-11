@@ -1,0 +1,12 @@
+---
+- name: Stop systemd service
+  ansible.builtin.systemd_service:
+    no_block: false
+    scope: system
+    name: redpanda-console
+    state: stopped
+  register: redpanda_console_systemd_service_stop
+  failed_when: >-
+    redpanda_console_systemd_service_stop is failed
+    and 'Could not find the requested service' not in redpanda_console_systemd_service_stop.msg
+...

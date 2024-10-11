@@ -1,0 +1,23 @@
+---
+- name: install | Create configuration file {{ redpanda_console_config_dir_path }}/redpanda-console-config.yaml
+  tags:
+    - kafka_install
+  ansible.builtin.template:
+    src: templates/etc/redpanda/redpanda-console-config.yaml.j2
+    dest: "{{ redpanda_console_config_dir_path }}/redpanda-console-config.yaml"
+    owner: root
+    group: root
+    mode: u=rw-x,g=rw-x,o=r-x
+  register: redpanda_console_config_file
+  notify:
+    - Restart Redpanda Console
+
+- name: install | Enable systemd service unit
+  ansible.builtin.systemd_service:
+    no_block: false
+    daemon_reload: true
+    scope: system
+    name: redpanda-console
+    masked: false
+    enabled: true
+...

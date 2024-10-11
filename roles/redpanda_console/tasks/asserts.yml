@@ -1,0 +1,6 @@
+---
+- name: asserts | Option redpanda_console_version
+  ansible.builtin.assert:
+    that:
+      - redpanda_console_version is ansible.builtin.match('^(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)$')
+...

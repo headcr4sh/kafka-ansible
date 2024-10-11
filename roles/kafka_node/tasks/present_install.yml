@@ -1,0 +1,191 @@
+---
+- name: install | Extract Kafka package
+  tags:
+    - kafka_install
+  ansible.builtin.unarchive:
+    dest: "{{ kafka_installation_prefix }}"
+    exclude:
+      - "kafka_{{ kafka_scala_version }}-{{ kafka_version }}/bin/windows"
+      - "kafka_{{ kafka_scala_version }}-{{ kafka_version }}/site-docs"
+      - "kafka_{{ kafka_scala_version }}-{{ kafka_version }}/logs"
+      - "kafka_{{ kafka_scala_version }}-{{ kafka_version }}/config"
+    extra_opts:
+      # See: https://unix.stackexchange.com/questions/346346/ansible-extract-without-first-directory#answer-365990
+      - '--strip-components=1'
+      - '--show-stored-names'
+    group: root
+    keep_newer: false
+    list_files: false
+    owner: root
+    remote_src: true
+    src: "{{ kafka_downloaded_package_file_path }}"
+    mode: u=rw-x+X,g=r-x+X,o=r-x+X
+  notify:
+    - Restart kafka
+
+- name: install | Create directory {{ kafka_config_dir_path }}
+  tags:
+    - kafka_install
+  ansible.builtin.file:
+    path: "{{ kafka_config_dir_path }}"
+    owner: root
+    group: root
+    mode: u=rw-x+X,g=r-x+X,o=r-x+X
+    recurse: false
+    state: directory
+
+- name: install | Create symlink from {{ kafka_config_dir_path }} to installation prefix
+  tags:
+    - kafka_install
+  ansible.builtin.file:
+    src: "{{ kafka_config_dir_path }}"
+    dest: "{{ kafka_installation_prefix }}/config"
+    owner: root
+    group: root
+    state: link
+
+- name: install | Create configuration file {{ kafka_config_dir_path }}/server.properties
+  tags:
+    - kafka_install
+  ansible.builtin.template:
+    src: templates/etc/kafka/server.properties.j2
+    dest: "{{ kafka_config_dir_path }}/server.properties"
+    owner: root
+    group: root
+    mode: u=rw-x,g=rw-x,o=r-x
+  register: kafka_server_properties_file
+  notify:
+    - Restart kafka
+
+- name: install | Create LOG4J configuration file {{ kafka_config_dir_path }}/log4j.properties
+  tags:
+    - kafka_install
+    - kafka_install_log4j_config
+  ansible.builtin.template:
+    src: templates/etc/kafka/log4j.properties.j2
+    dest: "{{ kafka_config_dir_path }}/log4j.properties"
+    owner: root
+    group: root
+    mode: u=rw,g=rw,o=r
+  register: kafka_log4j_configuration_file
+  notify:
+    - Restart kafka
+
+- name: install | Create symlink for LOG4J tools configuration
+  tags:
+    - kafka_install
+    - kafka_install_log4j_config
+  ansible.builtin.file:
+    src: "{{ kafka_log4j_configuration_file.dest }}"
+    dest: "{{ kafka_config_dir_path }}/tools-log4j.properties"
+    owner: root
+    group: root
+    mode: u=rw,g=rw,o=r
+    state: link
+
+- name: install | Verify Kafka Version
+  tags:
+    - kafka_install
+  ansible.builtin.shell:
+    chdir: "{{ kafka_installation_prefix }}"
+    cmd: |
+      set -e -u
+      ./bin/kafka-configs.sh --version
+    executable: "/bin/sh"
+  changed_when: False # Just a check, so nothing has changed really.
+  register: kafka_installed_version
+  failed_when: >-
+    kafka_installed_version.stdout != kafka_version
+
+- name: install | Check if cluster ID has already been set
+  tags:
+    - kafka_install
+  ansible.builtin.stat:
+    path: "{{ kafka_config_cluster_id_file_path }}"
+  register: kafka_config_cluster_id_file_stat
+
+- name: install | Assert that cluster ID is not about to be changed
+  tags:
+    - kafka_install
+  ansible.builtin.fail:
+    msg: "Cluster ID is about to be changed. This is not supported."
+  when: >-
+    (kafka_config_cluster_id_file_stat.stat.exists)
+    and (kafka_cluster_id != '')
+    and (kafka_cluster_id != lookup('file', kafka_config_cluster_id_file_path))
+
+- name: install | Store cluster ID in {{ kafka_config_cluster_id_file_path }}
+  tags:
+    - kafka_install
+  ansible.builtin.shell:
+    chdir: "{{ kafka_installation_prefix }}"
+    cmd: "echo {{ kafka_cluster_id | quote }} | tee '{{ kafka_config_cluster_id_file_path }}'"
+    executable: "/bin/sh"
+    creates: "{{ kafka_config_cluster_id_file_path }}"
+  when: >-
+    (not kafka_config_cluster_id_file_stat.stat.exists)
+    and (kafka_cluster_id != '')
+  failed_when: >-
+    not kafka_cluster_id in lookup('file', kafka_config_cluster_id_file_path)
+
+- name: install | Create new random Cluster ID
+  tags:
+    - kafka_install
+  ansible.builtin.shell:
+    chdir: "{{ kafka_installation_prefix }}"
+    cmd: "./bin/kafka-storage.sh random-uuid | tee '{{ kafka_config_cluster_id_file_path }}'"
+    executable: "/bin/sh"
+    creates: "{{ kafka_config_cluster_id_file_path }}"
+  when: >-
+    (not kafka_config_cluster_id_file_stat.stat.exists)
+    and (kafka_cluster_id == '')
+
+- name: install | Adjust permissions of file {{ kafka_config_cluster_id_file_path }}
+  tags:
+    - kafka_install
+  ansible.builtin.file:
+    path: "{{ kafka_config_cluster_id_file_path }}"
+    group: root
+    mode: u=rw-x,g=rw-x,o=r-x
+    owner: root
+
+- name: install | Update kafka_cluster_id variable from {{ kafka_config_cluster_id_file_path }} if necessary
+  tags:
+    - kafka_install
+  ansible.builtin.set_fact:
+    kafka_cluster_id: "{{ lookup('file', kafka_config_cluster_id_file_path) }}"
+
+- name: install | Create systemd service environment file {{ kafka_systemd_environment_file_path }}
+  tags:
+    - kafka_install
+  ansible.builtin.template:
+    src: templates/etc/sysconfig/kafka.j2
+    dest: "{{ kafka_systemd_environment_file_path }}"
+    owner: root
+    group: root
+    mode: u=rw-x,g=rw-x,o=r-x
+  notify:
+    - Restart kafka
+
+- name: install | Create systemd service unit /lib/systemd/system/kafka.service
+  tags:
+    - kafka_install
+  ansible.builtin.template:
+    src: templates/lib/systemd/system/kafka.service.j2
+    dest: /lib/systemd/system/kafka.service
+    owner: root
+    group: root
+    mode: u=rw-x,g=rw-x,o=r-x
+  notify:
+    - Reload systemd daemon
+    - Restart kafka
+
+- name: install | Enable systemd service unit
+  ansible.builtin.systemd_service:
+    no_block: false
+    daemon_reload: true
+    scope: system
+    name: kafka
+    masked: false
+    enabled: true
+...

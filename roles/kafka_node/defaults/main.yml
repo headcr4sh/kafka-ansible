@@ -1,0 +1,40 @@
+---
+kafka_state: present
+
+kafka_cache_download_path: /var/tmp/ansible-downloads/kafka
+
+kafka_installation_prefix: /opt/kafka
+
+kafka_version: '3.8.0'
+kafka_scala_version: '2.13'
+
+#kafka_java_home: /usr/local/lib/jvm/custom-java-runtime
+
+# See: https://developer.confluent.io/faq/apache-kafka/kafka-operations/
+kafka_ports:
+  clients: 9092
+  control_plane: 9093
+  connect: 8083
+  schema_registry: 8081
+  rest_proxy: 8082
+  ksqldb: 8088
+
+# Best to be generated with `kafka-storage.sh random-uuid`
+# Can be set to an empty string to automatically generate a UUID
+# or leave an existing cluster ID unchanged.
+kafka_cluster_id: ''
+
+kafka_system_group_name: kafka
+kafka_system_user_name: kafka
+
+kafka_server_properties:
+  process.roles:
+    - broker
+    - controller
+  node.id: 1
+  log.dirs:
+    - /var/lib/kafka/kraft-combined-logs
+  num.partitions: 1
+  num.recovery.threads.per.data.dir: 1
+  log.retention.hours: 168
+...

@@ -1,0 +1,18 @@
+---
+- name: Format Kafka log storage
+  ansible.builtin.shell:
+    chdir: "{{ kafka_installation_prefix }}"
+    cmd: "./bin/kafka-storage.sh format --config \"{{ kafka_server_properties_file.dest }}\" --cluster-id \"{{ kafka_cluster_id }}\" --ignore-formatted"
+    executable: "/bin/sh"
+  become: true
+  become_user: "{{ kafka_system_user_name }}"
+- name: Adjust permissions of logs directories contents
+  loop: "{{ kafka_server_properties['log.dirs'] }}"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ kafka_system_user_name }}"
+    group: "{{ kafka_system_group_name }}"
+    mode: u=rw-x+X,g=r-x+X
+    recurse: true
+    state: directory
+...

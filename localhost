@@ -1,0 +1,7 @@
+nodes:
+  hosts:
+    localhost:
+      ansible_connection: local
+      ansible_user: root
+  vars:
+    redpanda_console_analytics_enabled: false

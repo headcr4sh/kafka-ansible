@@ -1,0 +1,49 @@
+---
+- name: storage | Determine location of meta.properties file for log storage
+  tags:
+    - kafka_storage
+  ansible.builtin.set_fact:
+    kafka_log_dir_meta_properties_file_path: "{{ item }}/meta.properties"
+
+- name: storage | Check if Kafka storage has already been initialized (stat)
+  tags:
+    - kafka_storage
+  ansible.builtin.stat:
+    path: "{{ kafka_log_dir_meta_properties_file_path }}"
+  register: kafka_log_dir_meta_properties_file_stat
+
+# We bail out immediately if the log storage exists and belongs to another Node and/or cluster
+- name: storage | Check meta.properties of log storage
+  tags:
+    - kafka_storage
+  ansible.builtin.set_fact:
+    kafka_log_dir_meta_properties:
+      cluster.id: "{{ lookup('ansible.builtin.ini', 'cluster.id', file=kafka_log_dir_meta_properties_file_path, type='properties') }}"
+      directory.id: "{{ lookup('ansible.builtin.ini', 'directory.id', file=kafka_log_dir_meta_properties_file_path, type='properties') }}"
+      node.id: "{{ lookup('ansible.builtin.ini', 'node.id', file=kafka_log_dir_meta_properties_file_path, type='properties') }}"
+      version: "{{ lookup('ansible.builtin.ini', 'version', file=kafka_log_dir_meta_properties_file_path, type='properties') }}"
+  when: >-
+    kafka_log_dir_meta_properties_file_stat.stat.exists
+  failed_when: >-
+    ((kafka_log_dir_meta_properties['node.id'] | int) != kafka_server_properties['node.id'])
+    and (kafka_log_dir_meta_properties['cluster.id'] != kafka_cluster_id)
+
+- name: storage | Ensure log directory exists
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ kafka_system_user_name }}"
+    group: "{{ kafka_system_group_name }}"
+    mode: u=rw-x+X,g=r-x+X
+    recurse: true
+    state: directory
+
+- name: storage | Determine if log storages need to be initialized
+  tags:
+    - kafka_storage
+  changed_when: not kafka_log_dir_meta_properties_file_stat.stat.exists
+  ansible.builtin.debug:
+    msg: "Log storage {{ item }} has {{ 'not yet ' if not kafka_log_dir_meta_properties_file_stat.stat.exists else 'already' }} been initialized."
+  notify:
+    - Format Kafka log storage
+    - Restart kafka
+...

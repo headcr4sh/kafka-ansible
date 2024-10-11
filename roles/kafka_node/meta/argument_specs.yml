@@ -1,0 +1,31 @@
+---
+argument_specs:
+  main:
+    short_description: Installs Apache Kafka.
+    options:
+      kafka_state:
+        description: Desired state of the Kafka node installation
+        type: str
+        choices:
+          - present
+          - absent
+        default: present
+      kafka_version:
+        description: Version of Apache Kafka to Install
+        type: str
+      kafka_scala_version:
+        description: Scala version used to build the distribution of Kafka to install
+        type: str
+      kafka_java_home:
+        description: Home of the Java runtime used to run Kafka, defaults to the system default if unset
+        type: str
+        required: false
+      kafka_system_group_name:
+        description: Name of the POSIX system group to be used
+        type: str
+        default: kafka
+      kafka_system_user_name:
+        description: Name of the POSIX system user to be used
+        type: str
+        default: kafka
+...

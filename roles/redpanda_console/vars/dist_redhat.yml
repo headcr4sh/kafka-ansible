@@ -1,0 +1,1 @@
+redpanda_console_package_arch: "{{ ansible_architecture }}"

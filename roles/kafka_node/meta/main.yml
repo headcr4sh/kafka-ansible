@@ -1,0 +1,30 @@
+---
+galaxy_info:
+  author: Benjamin P. Jung
+  namespace: qvest-digital
+  role_name: kafka_node
+  description: Apache Kafka installation for RHEL/CentOS and Debian/Ubuntu
+  license: MIT
+  min_ansible_version: 2.14.0
+  platforms:
+    - name: EL
+      versions:
+        - '8'
+        - '9'
+    - name: Debian
+      versions:
+        - bookworm
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+  galaxy_tags:
+    - clustering
+    - eventsourcing
+    - kafka
+    - messaging
+    - pubsub
+    - streaming
+
+dependencies: []
+...

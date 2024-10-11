@@ -1,0 +1,52 @@
+---
+argument_specs:
+  main:
+    short_description: Installs the Redpanda console, a Kafka web frontend.
+    options:
+      redpanda_console_state:
+        description: Desired state of the Redpanda console installation
+        type: str
+        choices:
+          - present
+          - absent
+      redpanda_console_version:
+        description: Version of Redpanda Console to Install
+        type: str
+      redpanda_console_kafka_rack_id:
+        description: |
+          Kafka rack ID to use for Redpanda Console.
+          In multi-zone Kafka clusters, you can reduce traffic costs by consuming messages from replica brokers in the same zone.
+        type: str
+        required: false
+      redpanda_console_analytics_enabled:
+        description: |
+          Enables or disables the telemetry service that sends anonymized usage statistics to Redpanda.
+          Redpanda uses these statistics to evaluate feature usage.
+        type: bool
+        default: false
+      redpanda_console_redpanda_admin_api_enabled:
+        description: |
+          Enables or disables the Redpanda Admin API that enables additional Redpanda-specific features.
+        type: bool
+        default: false
+      redpanda_license_key:
+        description: |
+          License key to use for Redpanda Console.
+          If you have a license key, you can use it to enable additional features.
+        type: str
+        required: false
+      redpanda_console_metrics_namespace:
+        description: |
+          Prefix for all exported Prometheus metrics.
+        type: str
+        default: console
+      redpanda_console_logger_level:
+        description: Log level
+        type: str
+        choices:
+          - debug
+          - info
+          - warn
+          - error
+          - fatal
+...

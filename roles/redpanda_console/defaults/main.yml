@@ -1,0 +1,11 @@
+---
+redpanda_console_state: present
+redpanda_console_cache_download_path: /var/tmp/ansible-downloads/redpanda-console
+redpanda_console_version: "2.7.2"
+
+redpanda_console_redpanda_admin_api_enabled: false
+
+redpanda_console_metrics_namespace: console
+redpanda_console_logger_level: info
+redpanda_console_analytics_enabled: false
+...

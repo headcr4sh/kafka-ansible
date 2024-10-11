@@ -1,0 +1,14 @@
+---
+- name: Reload systemd daemon
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+    no_block: false
+    scope: system
+
+- name: Restart Redpanda Console
+  ansible.builtin.systemd_service:
+    no_block: false
+    scope: system
+    name: redpanda-console
+    state: restarted
+...

@@ -1,0 +1,23 @@
+---
+- name: Set distribution-specific default variables
+  ansible.builtin.import_tasks:
+    file: defaults.yml
+
+- name: Assert required options have been set
+  ansible.builtin.import_tasks:
+    file: asserts.yml
+
+- name: Determine location of systemd service environment file
+  ansible.builtin.set_fact:
+    kafka_systemd_environment_file_path: "{{ (ansible_os_family == 'Debian') | ansible.builtin.ternary('/etc/default', '/etc/sysconfig') }}/kafka"
+
+- name: Provision Apache Kafka Node
+  ansible.builtin.import_tasks:
+    file: present.yml
+  when: kafka_state == 'present'
+
+- name: Deprovision Apache Kafka Node
+  ansible.builtin.import_tasks:
+    file: absent.yml
+  when: kafka_state == 'absent'
+...

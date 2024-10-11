@@ -1,0 +1,6 @@
+---
+redpanda_console_config_dir_path: /etc/redpanda
+redpanda_console_release_checksums_url: https://github.com/redpanda-data/console/releases/download/v{{ redpanda_console_version }}/checksums.txt
+redpanda_console_release_rpm_download_url: https://github.com/redpanda-data/console/releases/download/v{{ redpanda_console_version }}/redpanda-console-{{ redpanda_console_version }}-1.{{ ansible_facts['ansible_userspace_architecture'] }}.rpm
+redpanda_console_release_deb_download_url: https://github.com/redpanda-data/console/releases/download/v{{ redpanda_console_version }}/redpanda-console_{{ redpanda_console_version }}_{{ ansible_facts['ansible_userspace_architecture'] }}.deb
+...

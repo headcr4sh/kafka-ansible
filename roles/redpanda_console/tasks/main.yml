@@ -1,0 +1,19 @@
+---
+- name: Set distribution-specific default variables
+  ansible.builtin.import_tasks:
+    file: defaults.yml
+
+- name: Assert required options have been set
+  ansible.builtin.import_tasks:
+    file: asserts.yml
+
+- name: Provision Red Panda Console
+  ansible.builtin.import_tasks:
+    file: present.yml
+  when: redpanda_console_state == 'present'
+
+- name: Deprovision Red Panda Console
+  ansible.builtin.import_tasks:
+    file: absent.yml
+  when: redpanda_console_state == 'absent'
+...
