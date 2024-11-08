@@ -15,4 +15,3 @@
     scope: system
     name: kafka
     state: restarted
-...

@@ -1,0 +1,28 @@
+---
+- name: Assert required options have been set
+  ansible.builtin.import_tasks:
+    file: asserts.yml
+
+- name: Determine location of systemd service environment file
+  ansible.builtin.set_fact:
+    kafka_systemd_environment_file_path: "{{ (ansible_os_family == 'Debian') | ansible.builtin.ternary('/etc/default', '/etc/sysconfig') }}/kafka"
+
+- name: Check kafka state
+  ansible.builtin.assert:
+    that:
+      - kafka_state in ['present', 'absent']
+    fail_msg: "kafka_state must be one of [present, absent]"
+
+- name: Validate OS
+  ansible.builtin.assert:
+    that:
+      - ansible_os_family in [ 'RedHat', 'Debian' ]
+    fail_msg: "OS Family is not supported (RedHat, Debian)"
+
+- name: Include OS specific vars
+  ansible.builtin.include_vars:
+    file: "dis_{{ ansible_os_family | lower }}.yml"
+
+- name: Provision Apache Kafka Node
+  ansible.builtin.import_tasks:
+    file: "{{ kafka_state }}.yml"

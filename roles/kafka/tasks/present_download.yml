@@ -29,6 +29,7 @@
   register: kafka_package_archive_checksum_gpg
   when: (not kafka_package_checksum_stat.stat.exists)
 
+# what makes this approach more secure, this needs to be stored in defaults
 - name: download | Convert Kafka package checksum
   tags:
     - kafka_download

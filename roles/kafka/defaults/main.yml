@@ -1,0 +1,42 @@
+---
+kafka_state: present
+
+kafka_cache_download_path: /var/tmp/ansible-downloads/kafka
+kafka_installation_prefix: /opt/kafka
+
+kafka_version: "3.8.0"
+kafka_scala_version: "2.13"
+
+# kafka_java_home: /usr/local/lib/jvm/custom-java-runtime
+
+# See: https://developer.confluent.io/faq/apache-kafka/kafka-operations/
+kafka_ports:
+  clients: 9092
+  control_plane: 9093
+  connect: 8083
+  schema_registry: 8081
+  rest_proxy: 8082
+  ksqldb: 8088
+
+kafka_cluster_id: ""
+
+kafka_system_group_name: kafka
+kafka_system_user_name: kafka
+
+kafka_server_properties:
+  process.roles:
+    - broker
+    - controller
+  node.id: 1
+  log.dirs:
+    - /var/lib/kafka/kraft-combined-logs
+  num.partitions: 1
+  num.recovery.threads.per.data.dir: 1
+  log.retention.hours: 168
+
+kafka_package_download_url: https://downloads.apache.org/kafka/{{ kafka_version }}/kafka_{{ kafka_scala_version }}-{{ kafka_version }}.tgz
+kafka_checksum_sha512_download_url: "{{ kafka_package_download_url }}.sha512"
+kafka_downloaded_checksum_file_path: "{{ kafka_cache_download_path }}/{{ kafka_checksum_sha512_download_url | ansible.builtin.basename }}"
+kafka_downloaded_package_file_path: "{{ kafka_cache_download_path }}/{{ kafka_package_download_url | ansible.builtin.basename }}"
+kafka_config_cluster_id_file_path: "{{ kafka_installation_prefix }}/CLUSTER_ID"
+kafka_config_dir_path: "/etc/kafka"

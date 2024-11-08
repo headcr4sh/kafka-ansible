@@ -23,7 +23,7 @@
   notify:
     - Restart kafka
 
-- name: install | Create directory {{ kafka_config_dir_path }}
+- name: install | Ensure directory {{ kafka_config_dir_path }}
   tags:
     - kafka_install
   ansible.builtin.file:
@@ -34,7 +34,7 @@
     recurse: false
     state: directory
 
-- name: install | Create symlink from {{ kafka_config_dir_path }} to installation prefix
+- name: install | Ensure symlink from {{ kafka_config_dir_path }} to installation prefix
   tags:
     - kafka_install
   ansible.builtin.file:
@@ -44,7 +44,7 @@
     group: root
     state: link
 
-- name: install | Create configuration file {{ kafka_config_dir_path }}/server.properties
+- name: install | Ensure configuration file {{ kafka_config_dir_path }}/server.properties
   tags:
     - kafka_install
   ansible.builtin.template:
@@ -57,7 +57,7 @@
   notify:
     - Restart kafka
 
-- name: install | Create LOG4J configuration file {{ kafka_config_dir_path }}/log4j.properties
+- name: install | Ensure LOG4J configuration file {{ kafka_config_dir_path }}/log4j.properties
   tags:
     - kafka_install
     - kafka_install_log4j_config
@@ -71,7 +71,7 @@
   notify:
     - Restart kafka
 
-- name: install | Create symlink for LOG4J tools configuration
+- name: install | Ensure symlink for LOG4J tools configuration
   tags:
     - kafka_install
     - kafka_install_log4j_config

@@ -3,6 +3,10 @@ argument_specs:
   main:
     short_description: Installs Apache Kafka.
     options:
+      kafka_id:
+        description: The Uniq id of the kafka cluster
+        type: str
+        required: true
       kafka_state:
         description: Desired state of the Kafka node installation
         type: str
@@ -28,4 +32,3 @@ argument_specs:
         description: Name of the POSIX system user to be used
         type: str
         default: kafka
-...
