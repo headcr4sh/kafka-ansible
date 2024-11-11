@@ -31,4 +31,17 @@
   loop: "{{ kafka_server_process_roles }}"
   loop_control:
     loop_var: role
+
+- name: asserts | Option kafka_server_ssl_enabled_protocols
+  ansible.builtin.assert:
+    that:
+      - kafka_server_ssl_enabled_protocols | length > 0
+
+- name: asserts | Option kafka_server_ssl_enabled_protocols (enum values)
+  ansible.builtin.assert:
+    that:
+      - protocol in ['TLSv1.2', 'TLSv1.3']
+  loop: "{{ kafka_server_ssl_enabled_protocols }}"
+  loop_control:
+    loop_var: protocol
 ...

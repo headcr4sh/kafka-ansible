@@ -1,4 +1,36 @@
 ---
+- name: install | Check if Kafka is already installed
+  stat:
+    path: "{{ kafka_installation_prefix }}/bin/kafka-configs.sh"
+  register: kafka_configs_script_installed
+
+- name: install | Verify Kafka Version (prior to installation)
+  ansible.builtin.shell:
+    chdir: "{{ kafka_installation_prefix }}"
+    cmd: |
+      set -e -u
+      ./bin/kafka-configs.sh --version
+    executable: "/bin/sh"
+  changed_when: False # Just a check, so nothing has changed really.
+  register: kafka_installed_version
+  when: |-
+    kafka_configs_script_installed.stat.exists
+  failed_when: >-
+    kafka_installed_version.rc != 0
+
+- name: install | Remove existing installation in "{{ kafka_installation_prefix }}" if upgrading
+  ansible.builtin.file:
+    state: "{{ (kafka_installed_version.stdout == kafka_version) | ansible.builtin.ternary('directory', 'absent') }}"
+    path: "{{ kafka_installation_prefix }}"
+  when: kafka_configs_script_installed.stat.exists
+
+- name: install | Create directory {{ kafka_installation_prefix }}
+  ansible.builtin.file:
+    state: directory
+    path: "{{ kafka_installation_prefix }}"
+    owner: root
+    group: root
+
 - name: install | Extract Kafka package
   tags:
     - kafka_install
@@ -15,7 +47,7 @@
       - '--show-stored-names'
     group: root
     keep_newer: false
-    list_files: false
+    list_files: true
     owner: root
     remote_src: true
     src: "{{ kafka_downloaded_package_file_path }}"
@@ -83,7 +115,7 @@
     mode: u=rw,g=rw,o=r
     state: link
 
-- name: install | Verify Kafka Version
+- name: install | Verify Kafka Version (after installation)
   tags:
     - kafka_install
   ansible.builtin.shell:

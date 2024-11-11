@@ -35,4 +35,11 @@ argument_specs:
         default:
           - broker
           - controller
+      kafka_server_ssl_enabled_protocols:
+        description: List of SSL/TLS protocols to enable for Kafka server
+        type: list
+        elements: str
+        default:
+          - TLSv1.2
+          - TLSv1.3
 ...
