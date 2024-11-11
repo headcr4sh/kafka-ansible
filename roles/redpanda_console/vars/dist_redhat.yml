@@ -1,1 +1,3 @@
 redpanda_console_package_arch: "{{ ansible_architecture }}"
+redpanda_console_package_format_file_suffix: rpm
+redpanda_console_package_download_url: "{{ redpanda_console_release_rpm_download_url }}"

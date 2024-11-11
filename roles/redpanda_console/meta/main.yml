@@ -23,7 +23,6 @@ galaxy_info:
     - kafka
     - redpanda
     - ui
-    - web-frontend
+    - frontend
 
 dependencies: []
-...

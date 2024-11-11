@@ -3,7 +3,7 @@
 ## Local installation
 
 ```sh
-sudo ansible-playbook --inventory="./localhost" "./site.yml"
+sudo ansible-playbook --inventory="./inventories/localhost" "./site.yml"
 ```
 
 ## Further Links

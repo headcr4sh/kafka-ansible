@@ -25,7 +25,7 @@
   when: >-
     kafka_log_dir_meta_properties_file_stat.stat.exists
   failed_when: >-
-    ((kafka_log_dir_meta_properties['node.id'] | int) != kafka_server_properties['node.id'])
+    ((kafka_log_dir_meta_properties['node.id'] | int) != kafka_server_node_id)
     and (kafka_log_dir_meta_properties['cluster.id'] != kafka_cluster_id)
 
 - name: storage | Ensure log directory exists
@@ -44,6 +44,6 @@
   ansible.builtin.debug:
     msg: "Log storage {{ item }} has {{ 'not yet ' if not kafka_log_dir_meta_properties_file_stat.stat.exists else 'already' }} been initialized."
   notify:
-    - Format Kafka log storage
-    - Restart kafka
+    - kafka_log_storage_format
+    - kafka_restart
 ...

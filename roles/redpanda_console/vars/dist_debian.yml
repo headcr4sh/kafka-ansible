@@ -1,1 +1,3 @@
 redpanda_console_package_arch: "{{ 'amd64' if ansible_architecture == 'x86_64' else ('arm64' if ansible_architecture == 'aarch64' else ansible_architecture) }}"
+redpanda_console_package_format_file_suffix: deb
+redpanda_console_package_download_url: "{{ redpanda_console_release_deb_download_url }}"

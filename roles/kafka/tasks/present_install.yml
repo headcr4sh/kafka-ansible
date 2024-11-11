@@ -21,7 +21,7 @@
     src: "{{ kafka_downloaded_package_file_path }}"
     mode: u=rw-x+X,g=r-x+X,o=r-x+X
   notify:
-    - Restart kafka
+    - kafka_restart
 
 - name: install | Create directory {{ kafka_config_dir_path }}
   tags:
@@ -55,7 +55,7 @@
     mode: u=rw-x,g=rw-x,o=r-x
   register: kafka_server_properties_file
   notify:
-    - Restart kafka
+    - kafka_restart
 
 - name: install | Create LOG4J configuration file {{ kafka_config_dir_path }}/log4j.properties
   tags:
@@ -69,7 +69,7 @@
     mode: u=rw,g=rw,o=r
   register: kafka_log4j_configuration_file
   notify:
-    - Restart kafka
+    - kafka_restart
 
 - name: install | Create symlink for LOG4J tools configuration
   tags:
@@ -165,7 +165,7 @@
     group: root
     mode: u=rw-x,g=rw-x,o=r-x
   notify:
-    - Restart kafka
+    - kafka_restart
 
 - name: install | Create systemd service unit /lib/systemd/system/kafka.service
   tags:
@@ -177,8 +177,8 @@
     group: root
     mode: u=rw-x,g=rw-x,o=r-x
   notify:
-    - Reload systemd daemon
-    - Restart kafka
+    - kafka_systemd_daemon_reload
+    - kafka_restart
 
 - name: install | Enable systemd service unit
   ansible.builtin.systemd_service:

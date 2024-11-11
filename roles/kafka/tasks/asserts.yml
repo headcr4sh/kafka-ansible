@@ -19,4 +19,16 @@
       - kafka_system_user_name | length > 0
       - kafka_system_user_name | length < 32
       - kafka_system_user_name is ansible.builtin.match('^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$')
+- name: asserts | Option kafka_server_process_roles
+  ansible.builtin.assert:
+    that:
+      - kafka_server_process_roles | length > 0
+
+- name: asserts | Option kafka_server_process_roles (enum values)
+  ansible.builtin.assert:
+    that:
+      - role in ['broker', 'controller']
+  loop: "{{ kafka_server_process_roles }}"
+  loop_control:
+    loop_var: role
 ...

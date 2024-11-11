@@ -1,25 +1,25 @@
 - name: Download Apache Kafka
-  tags:
-    - kafka_download
   ansible.builtin.import_tasks:
     file: present_download.yml
+  tags:
+    - always
 
 - name: Create System User and Group
-  tags:
-    - kafka_system_user
   ansible.builtin.import_tasks:
     file: present_system_user.yml
+  tags:
+    - always
 
 - name: Install Apache Kafka
-  tags:
-    - kafka_install
   ansible.builtin.import_tasks:
     file: present_install.yml
+  tags:
+    - always
 
 - name: Format Log storage (if required)
-  tags:
-    - kafka_storage
   ansible.builtin.include_tasks:
     file: present_storage.yml
-  loop: "{{ kafka_server_properties['log.dirs'] }}"
+  loop: "{{ kafka_server_log_dirs }}"
+  tags:
+    - always
 ...

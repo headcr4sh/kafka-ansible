@@ -39,16 +39,7 @@
     kafka_package_archive_checksum_algorithm is not defined
     or kafka_package_archive_checksum is not defined
 
-- name: download | Check if Kafka package exists
-  tags:
-    - kafka_download
-  ansible.builtin.stat:
-    checksum_algorithm: "{{ kafka_package_archive_checksum_algorithm }}"
-    path: "{{ kafka_downloaded_package_file_path }}"
-  register:
-    kafka_downloaded_package_stat
-
-- name: Download | GET Kafka package
+- name: download | GET Kafka package
   tags:
     - kafka_download
   ansible.builtin.get_url:

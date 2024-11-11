@@ -28,4 +28,11 @@ argument_specs:
         description: Name of the POSIX system user to be used
         type: str
         default: kafka
+      kafka_server_process_roles:
+        description: List of roles for Kafka server processes to assume
+        type: list
+        elements: str
+        default:
+          - broker
+          - controller
 ...

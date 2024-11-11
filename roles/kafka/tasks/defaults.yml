@@ -1,0 +1,18 @@
+---
+- name: defaults | Determine location of systemd service environment file
+  ansible.builtin.set_fact:
+    kafka_systemd_environment_file_path: "{{ (ansible_os_family == 'Debian') | ansible.builtin.ternary('/etc/default', '/etc/sysconfig') }}/kafka"
+
+- name: defaults | Include distribution-specific variables for CentOS/RHEL.
+  ansible.builtin.include_vars: "dist_redhat.yml"
+  when: ansible_os_family == 'RedHat'
+
+- name: defaults | Include distribution-specific variables for Debian.
+  ansible.builtin.include_vars: "{{ ansible_distribution | title }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
+  when: ansible_os_family == 'Debian'
+
+- name: defaults | Set required variables without defaults.
+  ansible.builtin.set_fact:
+    "{{ item }}": "{{ lookup('ansible.builtin.vars', item, default=lookup('ansible.builtin.vars', item + '_default')) }}"
+  loop:
+  - kafka_java_home

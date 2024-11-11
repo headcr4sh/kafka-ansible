@@ -4,6 +4,6 @@
   become_user: root
   hosts: nodes
   roles:
-    - role: kafka_node
+    - role: kafka
     - role: redpanda_console
   strategy: ansible.builtin.linear

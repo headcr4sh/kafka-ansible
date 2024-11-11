@@ -1,0 +1,39 @@
+---
+- name: Format Kafka log storage
+  ansible.builtin.shell:
+    chdir: "{{ kafka_installation_prefix }}"
+    cmd: "./bin/kafka-storage.sh format --config \"{{ kafka_server_properties_file.dest }}\" --cluster-id \"{{ kafka_cluster_id }}\" --ignore-formatted"
+    executable: "/bin/sh"
+  become: true
+  become_user: "{{ kafka_system_user_name }}"
+  listen: kafka_log_storage_format
+  register: kafka_log_storage_format
+  # TODO logging in tools to stderr should be changed to stdout.
+  changed_when: kafka_log_storage_format.rc == 0 and not 'All of the log directories are already formatted.' in kafka_log_storage_format.stderr
+
+- name: Adjust permissions of logs directories contents
+  loop: "{{ kafka_server_log_dirs }}"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: "{{ kafka_system_user_name }}"
+    group: "{{ kafka_system_group_name }}"
+    mode: u=rw-x+X,g=r-x+X
+    recurse: true
+    state: directory
+  listen: kafka_log_storage_format
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+    no_block: false
+    scope: system
+  listen: kafka_systemd_daemon_reload
+
+- name: Restart kafka
+  ansible.builtin.systemd_service:
+    no_block: false
+    scope: system
+    name: kafka
+    state: restarted
+  listen: kafka_restart
+...

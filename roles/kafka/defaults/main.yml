@@ -8,7 +8,7 @@ kafka_installation_prefix: /opt/kafka
 kafka_version: '3.8.0'
 kafka_scala_version: '2.13'
 
-#kafka_java_home: /usr/local/lib/jvm/custom-java-runtime
+# kafka_java_home: /usr/local/lib/jvm/custom-java-runtime
 
 # See: https://developer.confluent.io/faq/apache-kafka/kafka-operations/
 kafka_ports:
@@ -27,11 +27,19 @@ kafka_cluster_id: ''
 kafka_system_group_name: kafka
 kafka_system_user_name: kafka
 
+kafka_server_process_roles:
+  - broker
+  - controller
+kafka_server_node_id: 1
+
+kafka_server_log_dirs:
+  - /var/lib/kafka/kraft-combined-logs
+
+kafka_server_num_partitions: 1
+kafka_serer_num_recovery_threads_per_data_dir: 1
+kafka_server_log_retention_hours: 168
+
 kafka_server_properties:
-  process.roles:
-    - broker
-    - controller
-  node.id: 1
   log.dirs:
     - /var/lib/kafka/kraft-combined-logs
   num.partitions: 1
