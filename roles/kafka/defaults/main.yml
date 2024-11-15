@@ -18,6 +18,8 @@ kafka_port_schema_registry: 8081
 kafka_port_rest_proxy: 8082
 kafka_port_ksqldb: 8088
 
+kafka_console_log_output: 'stderr'
+
 # Best to be generated with `kafka-storage.sh random-uuid`
 # Can be set to an empty string to automatically generate a UUID
 # or leave an existing cluster ID unchanged.

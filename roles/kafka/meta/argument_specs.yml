@@ -16,6 +16,19 @@ argument_specs:
       kafka_scala_version:
         description: Scala version used to build the distribution of Kafka to install
         type: str
+      kafka_console_log_output:
+        description: Where to output the console log messages
+        type: str
+        choices:
+          - stdout
+          - stderr
+          - disabled
+        default: stderr
+      kafka_server_log_dirs:
+        description: List of directories to store Kafka logs
+        type: list
+        elements: str
+        required: true
       kafka_java_home:
         description: Home of the Java runtime used to run Kafka, defaults to the system default if unset
         type: str

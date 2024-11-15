@@ -1,8 +1,15 @@
 [Unit]
 Description=Apache Kafka Broker
 Documentation=http://kafka.apache.org/documentation.html
+
 Requires=network.target remote-fs.target
 After=network.target remote-fs.target
+
+{% for logs_dir in kafka_server_log_dirs %}
+AssertPathExists={{ logs_dir }}
+AssertPathIsDirectory={{ logs_dir }}
+AssertPathIsReadWrite={{ logs_dir }}
+{% endfor %}
 
 [Service]
 Type=simple
@@ -22,14 +29,22 @@ LogsDirectoryMode=0750
 RuntimeDirectory=kafka
 RuntimeDirectoryMode=0700
 
-Environment=TMPDIR=/run/kafka
-Environment=LOG_DIR=/var/log/kafka
+Environment=TMPDIR=%t/kafka
+Environment=LOG_DIR=%L/kafka
+{% if kafka_java_home is defined %}
 Environment=JAVA_HOME={{ kafka_java_home }}
+{% endif %}
+Environment=KAFKA_OPTS=-DZstdTempFolder=%T -Dorg.xerial.snappy.tempdir=%T
 EnvironmentFile=-{{ kafka_systemd_environment_file_path }}
 PassEnvironment=
 
 ExecStart={{ kafka_installation_prefix }}/bin/kafka-server-start.sh {{ kafka_server_properties_file.dest }}
 ExecStop={{ kafka_installation_prefix }}/bin/kafka-server-stop.sh
 
+Restart=on-failure
+
+PrivateTmp=yes
 [Install]
+Alias=kafka-broker.service
+Alias=kafka-server.service
 WantedBy=multi-user.target
