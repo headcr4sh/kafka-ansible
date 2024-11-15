@@ -16,6 +16,10 @@ argument_specs:
       kafka_scala_version:
         description: Scala version used to build the distribution of Kafka to install
         type: str
+      kafka_package_checksum:
+        description: Checksums of the Kafka package to be installed
+        type: str
+        required: false
       kafka_console_log_output:
         description: Where to output the console log messages
         type: str

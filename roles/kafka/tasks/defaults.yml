@@ -1,7 +1,17 @@
 ---
 - name: defaults | Include distribution-specific variables for OS family {{ ansible_os_family }}
-  include_vars: "dist_{{ ansible_os_family | lower }}.yml"
+  ansible.builtin.include_vars: "dist_{{ ansible_os_family | lower }}.yml"
   when: ansible_os_family == 'RedHat' or ansible_os_family == 'Debian'
+
+- name: defaults | Load well-known package checksums
+  ansible.builtin.include_vars: "checksums.yml"
+
+- name: defaults | Load default package checksum if not user-provided and well-known
+  ansible.builtin.set_fact:
+    kafka_package_checksum: "{{ kafka_package_checksums['kafka_' + kafka_scala_version + '-' + kafka_version + '.tgz'] }}"
+  when: |-
+    kafka_package_checksum is not defined
+    and kafka_package_checksums['kafka_' + kafka_scala_version + '-' + kafka_version + '.tgz'] is defined
 
 - name: defaults | Set required variables without defaults.
   ansible.builtin.set_fact:
