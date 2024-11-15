@@ -5,7 +5,7 @@ collections:
     type: "galaxy"
 
 roles:
-  - name : "geerlingguy.java"
+  - name: "geerlingguy.java"
     scm: git
     src: https://github.com/geerlingguy/ansible-role-java.git
     version: "2.5.0"

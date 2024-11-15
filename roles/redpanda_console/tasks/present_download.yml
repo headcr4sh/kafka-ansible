@@ -32,11 +32,11 @@
       grep "redpanda-console-{{ redpanda_console_version }}-1.{{ redpanda_console_package_arch }}.{{ redpanda_console_package_format_file_suffix }}" \
       "./checksums.v{{ redpanda_console_version }}.txt"
     executable: "/bin/sh"
-  changed_when: False # Just extracting the checksum line, so nothing has changed really.
+  changed_when: false # Just extracting the checksum line, so nothing has changed really.
   register: redpanda_console_package_checksum_line
 
 - name: download | Extract SHA checksum from whole checksum line
-  set_fact:
+  ansible.builtin.set_fact:
     redpanda_console_package_checksum: "{{ (redpanda_console_package_checksum_line.stdout | ansible.builtin.split('  '))[0] }}"
     redpanda_console_package_checksum_algorithm: sha256
 

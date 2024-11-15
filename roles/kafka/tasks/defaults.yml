@@ -17,10 +17,10 @@
   ansible.builtin.set_fact:
     "{{ item }}": "{{ lookup('ansible.builtin.vars', item, default=lookup('ansible.builtin.vars', item + '_default')) }}"
   loop:
-  - kafka_java_home
-  - kafka_port_clients
-  - kafka_port_control_plane
-  - kafka_port_connect
-  - kafka_port_schema_registry
-  - kafka_port_rest_proxy
-  - kafka_port_ksqldb
+    - kafka_java_home
+    - kafka_port_clients
+    - kafka_port_control_plane
+    - kafka_port_connect
+    - kafka_port_schema_registry
+    - kafka_port_rest_proxy
+    - kafka_port_ksqldb

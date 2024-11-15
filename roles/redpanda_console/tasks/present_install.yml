@@ -9,12 +9,12 @@
 
 - name: Install DEB package.
   ansible.builtin.apt:
-     name: "{{ redpanda_console_package_download_result.dest }}"
-     state: present
-     allow_downgrade: true
+    name: "{{ redpanda_console_package_download_result.dest }}"
+    state: present
+    allow_downgrade: true
   when: redpanda_console_package_format_file_suffix == 'deb'
 
-- name: install | Create configuration file {{ redpanda_console_config_dir_path }}/redpanda-console-config.yaml
+- name: install | Create configuration file redpanda-console-config.yaml in {{ redpanda_console_config_dir_path }}
   tags:
     - kafka_install
   ansible.builtin.template:

@@ -1,10 +1,10 @@
 ---
 - name: defaults | Include distribution-specific variables for OS family {{ ansible_os_family }}
-  include_vars: "dist_{{ ansible_os_family | lower }}.yml"
+  ansible.builtin.include_vars: "dist_{{ ansible_os_family | lower }}.yml"
   when: ansible_os_family == 'RedHat' or ansible_os_family == 'Debian'
 
 - name: defaults | Set required variables without defaults.
-  set_fact:
+  ansible.builtin.set_fact:
     "{{ item }}": "{{ lookup('ansible.builtin.vars', item, default=lookup('ansible.builtin.vars', item + '_default')) }}"
   loop: [] # Nothing to do (yet)
 ...

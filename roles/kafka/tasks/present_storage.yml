@@ -13,7 +13,7 @@
   register: kafka_log_dir_meta_properties_file_stat
 
 - name: storage | Slurp meta.properties of log storage
-  slurp:
+  ansible.builtin.slurp:
     src: "{{ kafka_log_dir_meta_properties_file_path }}"
   register: kafka_log_dir_meta_properties_file_slurped
   when: >-
