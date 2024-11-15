@@ -12,21 +12,24 @@
     path: "{{ kafka_log_dir_meta_properties_file_path }}"
   register: kafka_log_dir_meta_properties_file_stat
 
+- name: storage | Slurp meta.properties of log storage
+  slurp:
+    src: "{{ kafka_log_dir_meta_properties_file_path }}"
+  register: kafka_log_dir_meta_properties_file_slurped
+  when: >-
+    kafka_log_dir_meta_properties_file_stat.stat.exists
+
 # We bail out immediately if the log storage exists and belongs to another Node and/or cluster
 - name: storage | Check meta.properties of log storage
   tags:
     - kafka_storage
   ansible.builtin.set_fact:
-    kafka_log_dir_meta_properties:
-      cluster.id: "{{ lookup('ansible.builtin.ini', 'cluster.id', file=kafka_log_dir_meta_properties_file_path, type='properties') }}"
-      directory.id: "{{ lookup('ansible.builtin.ini', 'directory.id', file=kafka_log_dir_meta_properties_file_path, type='properties') }}"
-      node.id: "{{ lookup('ansible.builtin.ini', 'node.id', file=kafka_log_dir_meta_properties_file_path, type='properties') }}"
-      version: "{{ lookup('ansible.builtin.ini', 'version', file=kafka_log_dir_meta_properties_file_path, type='properties') }}"
+    kafka_log_dir_meta_properties: "{{ ('[global]\n' + (kafka_log_dir_meta_properties_file_slurped.content | b64decode)) | community.general.from_ini }}"
   when: >-
     kafka_log_dir_meta_properties_file_stat.stat.exists
   failed_when: >-
-    ((kafka_log_dir_meta_properties['node.id'] | int) != kafka_server_node_id)
-    and (kafka_log_dir_meta_properties['cluster.id'] != kafka_cluster_id)
+    ((kafka_log_dir_meta_properties['global']['node.id'] | int) != kafka_server_node_id)
+    and (kafka_log_dir_meta_properties['global']['cluster.id'] != kafka_cluster_id)
 
 - name: storage | Ensure log directory exists
   ansible.builtin.file:

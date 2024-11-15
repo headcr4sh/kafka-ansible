@@ -1,5 +1,13 @@
 # Ansible Roles for Managing Apache Kafka
 
+## Prerequisites
+
+the required prerequisites need to be installed first:
+
+```sh
+ansible-galaxy install -r requirements.yml --force
+```
+
 ## Local installation
 
 ```sh

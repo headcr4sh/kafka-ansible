@@ -8,3 +8,10 @@ kafka_downloaded_package_file_path: "{{ kafka_cache_download_path }}/{{ kafka_pa
 kafka_config_cluster_id_file_path: "{{ kafka_installation_prefix }}/CLUSTER_ID"
 
 kafka_config_dir_path: "/etc/kafka"
+
+kafka_port_clients_default: 9092
+kafka_port_control_plane_default: 9093
+kafka_port_connect_default: 8083
+kafka_port_schema_registry_default: 8081
+kafka_port_rest_proxy_default: 8082
+kafka_port_ksqldb_default: 8088

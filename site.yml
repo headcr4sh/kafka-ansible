@@ -4,6 +4,10 @@
   become_user: root
   hosts: nodes
   roles:
+    - role: geerlingguy.java
+      become: true
     - role: kafka
+      become: true
     - role: redpanda_console
+      become: true
   strategy: ansible.builtin.linear

@@ -1,1 +1,2 @@
 kafka_java_home_default: /usr/lib/jvm/jre
+kafka_systemd_environment_file_path: /etc/sysconfig/kafka

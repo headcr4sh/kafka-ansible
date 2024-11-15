@@ -1,11 +1,7 @@
 ---
-- name: defaults | Include distribution-specific variables for CentOS/RHEL.
-  include_vars: "dist_redhat.yml"
-  when: ansible_os_family == 'RedHat'
-
-- name: defaults | Include distribution-specific variables for Debian.
-  include_vars: "{{ ansible_distribution | title }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
-  when: ansible_os_family == 'Debian'
+- name: defaults | Include distribution-specific variables for OS family {{ ansible_os_family }}
+  include_vars: "dist_{{ ansible_os_family | lower }}.yml"
+  when: ansible_os_family == 'RedHat' or ansible_os_family == 'Debian'
 
 - name: defaults | Set required variables without defaults.
   set_fact:

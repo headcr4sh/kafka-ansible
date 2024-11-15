@@ -6,12 +6,28 @@ After=network.target remote-fs.target
 
 [Service]
 Type=simple
+
 User={{ kafka_system_user_name }}
 Group={{ kafka_system_group_name }}
+
+NoNewPrivileges=yes
+
+WorkingDirectory={{ kafka_installation_prefix }}
+
+ConfigurationDirectory=kafka
+CacheDirectory=kafka
+CacheDirectoryMode=RuntimeDirectoryMode=0700
+LogsDirectory=kafka
+LogsDirectoryMode=0750
+RuntimeDirectory=kafka
+RuntimeDirectoryMode=0700
+
+Environment=TMPDIR=/run/kafka
+Environment=LOG_DIR=/var/log/kafka
 Environment=JAVA_HOME={{ kafka_java_home }}
 EnvironmentFile=-{{ kafka_systemd_environment_file_path }}
 PassEnvironment=
-WorkingDirectory={{ kafka_installation_prefix }}
+
 ExecStart={{ kafka_installation_prefix }}/bin/kafka-server-start.sh {{ kafka_server_properties_file.dest }}
 ExecStop={{ kafka_installation_prefix }}/bin/kafka-server-stop.sh
 

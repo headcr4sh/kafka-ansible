@@ -32,10 +32,26 @@
   loop_control:
     loop_var: role
 
+- name: asserts | Option kafka_server_num_partitions
+  ansible.builtin.assert:
+    that: kafka_server_num_partitions > 0
+  when: kafka_server_num_partitions is defined
+
+- name: asserts | Option kafka_server_num_network_threads
+  ansible.builtin.assert:
+    that: kafka_server_num_network_threads > 0
+  when: kafka_server_num_network_threads is defined
+
+- name: asserts | Option kafka_server_num_io_threads
+  ansible.builtin.assert:
+    that: kafka_server_num_io_threads > 0
+  when: kafka_server_num_io_threads is defined
+
 - name: asserts | Option kafka_server_ssl_enabled_protocols
   ansible.builtin.assert:
     that:
       - kafka_server_ssl_enabled_protocols | length > 0
+  when: kafka_server_ssl_enabled_protocols is defined
 
 - name: asserts | Option kafka_server_ssl_enabled_protocols (enum values)
   ansible.builtin.assert:
@@ -44,4 +60,26 @@
   loop: "{{ kafka_server_ssl_enabled_protocols }}"
   loop_control:
     loop_var: protocol
+  when: kafka_server_ssl_enabled_protocols is defined
+
+- name: asserts | Option kafka_server_log_cleaner_threads
+  ansible.builtin.assert:
+    that:
+      - kafka_server_log_cleaner_threads > 0
+  when: kafka_server_log_cleaner_threads is defined
+
+- name: asserts | Option kafka_server_log_cleanup_policy
+  ansible.builtin.assert:
+    that:
+      - (kafka_server_log_cleanup_policy | length) > 0
+  when: kafka_server_log_cleanup_policy is defined
+
+- name: asserts | Option kafka_server_log_cleanup_policy (enum values)
+  ansible.builtin.assert:
+    that:
+      - policy in ['compact', 'delete']
+  loop: "{{ kafka_server_log_cleanup_policy }}"
+  loop_control:
+    loop_var: policy
+  when: kafka_server_log_cleanup_policy is defined
 ...

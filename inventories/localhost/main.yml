@@ -4,4 +4,5 @@ nodes:
       ansible_connection: local
       ansible_user: root
   vars:
+    kafka_cluster_id: 'local-dev'
     redpanda_console_analytics_enabled: false

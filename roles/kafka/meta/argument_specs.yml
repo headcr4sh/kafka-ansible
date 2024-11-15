@@ -28,6 +28,28 @@ argument_specs:
         description: Name of the POSIX system user to be used
         type: str
         default: kafka
+      kafka_port_clients:
+        type: int
+        required: false
+      kafka_port_control_plane:
+        type: int
+        required: false
+      kafka_port_connect:
+        type: int
+        required: false
+      kafka_port_schema_registry:
+        type: int
+        required: false
+      kafka_port_rest_proxy:
+        type: int
+        required: false
+      kafka_port_ksqldb:
+        type: int
+        required: false
+      kafka_cluster_id:
+        description: Unique identifier for the Kafka cluster
+        type: str
+        required: true
       kafka_server_process_roles:
         description: List of roles for Kafka server processes to assume
         type: list
@@ -35,6 +57,18 @@ argument_specs:
         default:
           - broker
           - controller
+      kafka_server_log_cleaner_enable:
+        type: bool
+        required: false
+      kafka_server_log_cleaner_threads:
+        type: int
+        required: false
+      kafka_server_log_cleanup_policy:
+        type: list
+        elements: str
+        default:
+          - compact
+          - delete
       kafka_server_ssl_enabled_protocols:
         description: List of SSL/TLS protocols to enable for Kafka server
         type: list
@@ -42,4 +76,45 @@ argument_specs:
         default:
           - TLSv1.2
           - TLSv1.3
+      kafka_server_socket_send_buffer_bytes:
+        type: int
+        required: false
+      kafka_server_socket_receive_buffer_bytes:
+        type: int
+        required: false
+      kafka_server_transaction_state_log_min_isr:
+        type: int
+        required: false
+      kafka_server_socket_request_max_bytes:
+        type: int
+        required: false
+      kafka_server_broker_rack:
+        type: str
+        required: false
+      kafka_server_num_partitions:
+        type: int
+        default: 1
+      kafka_server_num_network_threads:
+        type: int
+        default: 3
+      kafka_server_num_io_threads:
+        type: int
+        default: 8
+      kafka_server_auto_create_topics_enable:
+        type: bool
+        required: false
+      kafka_server_delete_topic_enable:
+        type: bool
+        required: false
+      kafka_log4j_root_level:
+        description: Root log level
+        type: str
+        choices:
+          - FATAL
+          - ERROR
+          - WARN
+          - INFO
+          - DEBUG
+          - TRACE
+        default: INFO
 ...

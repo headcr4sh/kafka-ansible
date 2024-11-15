@@ -1,61 +1,79 @@
 process.roles={{ kafka_server_process_roles | join(',') }}
 node.id={{ kafka_server_node_id }}
-
+{% if kafka_server_broker_rack is defined and kafka_server_broker_rack != '' %}
 broker.rack={{ kafka_server_broker_rack }}
-controller.quorum.voters=1@localhost:{{ kafka_ports['control_plane'] }}
-listeners=PLAINTEXT://:{{ kafka_ports['clients'] }},CONTROLLER://:{{ kafka_ports['control_plane'] }}
+{% endif %}
+controller.quorum.voters=1@localhost:{{ kafka_port_control_plane }}
+listeners=PLAINTEXT://:{{ kafka_port_clients }},CONTROLLER://:{{ kafka_port_control_plane }}
 inter.broker.listener.name=PLAINTEXT
 
-advertised.listeners=PLAINTEXT://localhost:{{ kafka_ports['clients'] }}
+advertised.listeners=PLAINTEXT://localhost:{{ kafka_port_clients }}
 
 controller.listener.names=CONTROLLER
 
 listener.security.protocol.map=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,SSL:SSL,SASL_PLAINTEXT:SASL_PLAINTEXT,SASL_SSL:SASL_SSL
-
-num.network.threads=3
-
-num.io.threads=8
-
-socket.send.buffer.bytes=102400
-
-socket.receive.buffer.bytes=102400
-
-socket.request.max.bytes=104857600
-
+{% if kafka_server_num_network_threads is defined %}
+num.network.threads={{ kafka_server_num_network_threads }}
+{% endif %}
+{% if kafka_server_num_io_threads is defined %}
+num.io.threads={{ kafka_server_num_io_threads }}
+{% endif %}
+{% if kafka_server_socket_send_buffer_bytes is defined %}
+socket.send.buffer.bytes={{ kafka_server_socket_send_buffer_bytes }}
+{% endif %}
+{% if kafka_server_socket_receive_buffer_bytes is defined %}
+socket.receive.buffer.bytes={{ kafka_server_socket_receive_buffer_bytes }}
+{% endif %}
+{% if kafka_server_socket_request_max_bytes is defined %}
+socket.request.max.bytes={{ kafka_server_socket_request_max_bytes }}
+{% endif %}
 log.dirs={{ kafka_server_log_dirs | join(',') }}
-
-
+{% if kafka_server_num_partitions is defined %}
 num.partitions={{ kafka_server_num_partitions }}
-
+{% endif %}
+{% if kafka_server_num_recovery_threads_per_data_dir is defined %}
 num.recovery.threads.per.data.dir={{ kafka_server_num_recovery_threads_per_data_dir }}
+{% endif %}
 
-offsets.topic.replication.factor=1
-transaction.state.log.replication.factor=1
-transaction.state.log.min.isr=1
-
+{% if kafka_server_log_cleaner_enable is defined %}
+log.cleaner.enable={{ kafka_server_log_cleaner_enable }}
+{% endif %}
+{% if kafka_server_log_cleaner_threads is defined %}
+log.cleaner.threads={{ kafka_server_log_cleaner_threads }}
+{% endif %}
+{% if kafka_server_log_cleanup_policy is defined and (kafka_server_log_cleanup_policy | length) > 0 %}
+log.cleanup.policy={{ kafka_server_log_cleanup_policy | join(',') }}
+{% endif %}
+{% if kafka_server_delete_topic_enable is defined %}
+delete.topic.enable={{ kafka_server_delete_topic_enable }}
+{% endif %}
+{% if kafka_server_auto_create_topics_enable is defined %}
+auto.create.topics.enable={{ kafka_server_auto_create_topics_enable }}
+{% endif %}
+{% if kafka_server_offsets_topic_replication_factor is defined %}
+offsets.topic.replication.factor={{ kafka_server_offsets_topic_replication_factor }}
+{% endif %}
+{% if kafka_server_transaction_state_log_replication_factor is defined %}
+transaction.state.log.replication.factor={{ kafka_server_transaction_state_log_replication_factor }}
+{% endif %}
+{% if kafka_server_transaction_state_log_min_isr is defined %}
+transaction.state.log.min.isr={{ kafka_server_transaction_state_log_min_isr }}
+{% endif %}
+{% if kafka_server_ssl_enabled_protocols is defined %}
 ssl.enabled.protocols={{ kafka_server_ssl_enabled_protocols | join(',') }}
-#log.flush.interval.messages=10000
-
-# The maximum amount of time a message can sit in a log before we force a flush
-#log.flush.interval.ms=1000
-
-############################# Log Retention Policy #############################
-
-# The following configurations control the disposal of log segments. The policy can
-# be set to delete segments after a period of time, or after a given size has accumulated.
-# A segment will be deleted whenever *either* of these criteria are met. Deletion always happens
-# from the end of the log.
-
-# The minimum age of a log file to be eligible for deletion due to age
+{% endif %}
+{% if kafka_server_log_flush_interval_messages is defined %}
+log.flush.interval.messages={{ kafka_server_log_flush_interval_messages }}
+{% endif %}
+{% if kafka_server_log_flush_interval_ms is defined %}
+log.flush.interval.ms={{ kafka_server_log_flush_interval_ms }}
+{% endif %}
+{% if kafka_server_log_retention_hours is defined %}
 log.retention.hours={{ kafka_server_log_retention_hours }}
-
-# A size-based retention policy for logs. Segments are pruned from the log unless the remaining
-# segments drop below log.retention.bytes. Functions independently of log.retention.hours.
-#log.retention.bytes=1073741824
-
-# The maximum size of a log segment file. When this size is reached a new log segment will be created.
-log.segment.bytes=1073741824
-
-# The interval at which log segments are checked to see if they can be deleted according
-# to the retention policies
-log.retention.check.interval.ms=300000
+{% endif %}
+{% if kafka_server_log_segment_bytes is defined %}
+log.segment.bytes={{ kafka_server_log_segment_bytes }}
+{% endif %}
+{% if kafka_server_log_retention_check_interval_ms is defined %}
+log.retention.check.interval.ms={{ kafka_server_log_retention_check_interval_ms }}
+{% endif %}
