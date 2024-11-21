@@ -33,6 +33,23 @@ argument_specs:
         type: list
         elements: str
         required: true
+      kafka_controllers:
+        description: List of Kafka controller nodes
+        type: list
+        elements: dict
+        options:
+          node_id:
+            description: Unique identifier for the Kafka controller node
+            type: int
+            required: true
+          host:
+            description: Hostname or IP address of the Kafka controller node
+            type: str
+            required: true
+          port:
+            description: Port of the Kafka controller node
+            type: int
+            required: false
       kafka_java_home:
         description: Home of the Java runtime used to run Kafka, defaults to the system default if unset
         type: str
@@ -107,6 +124,12 @@ argument_specs:
         required: false
       kafka_server_broker_rack:
         type: str
+        required: false
+      kafka_server_broker_id_generation_enable:
+        type: bool
+        required: false
+      kafka_server_broker_session_timeout_ms:
+        type: int
         required: false
       kafka_server_num_partitions:
         type: int

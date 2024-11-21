@@ -3,22 +3,26 @@
   ansible.builtin.assert:
     that:
       - kafka_version is ansible.builtin.match('^(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)$')
+
 - name: asserts | Option kafka_scala_version
   ansible.builtin.assert:
     that:
       - kafka_scala_version is ansible.builtin.match('^(?P<major>\d+)\.(?P<minor>\d+)$')
+
 - name: asserts | Option kafka_system_group_name
   ansible.builtin.assert:
     that:
       - kafka_system_group_name | length > 0
       - kafka_system_group_name | length < 32
       - kafka_system_group_name is ansible.builtin.match('^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$')
+
 - name: asserts | Option kafka_system_user_name
   ansible.builtin.assert:
     that:
       - kafka_system_user_name | length > 0
       - kafka_system_user_name | length < 32
       - kafka_system_user_name is ansible.builtin.match('^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$')
+
 - name: asserts | Option kafka_server_process_roles
   ansible.builtin.assert:
     that:
@@ -31,6 +35,12 @@
   loop: "{{ kafka_server_process_roles }}"
   loop_control:
     loop_var: role
+
+- name: asserts | Option kafka_server_broker_session_timeout_ms
+  ansible.builtin.assert:
+    that:
+      - kafka_server_broker_session_timeout_ms > 0
+  when: kafka_server_broker_session_timeout_ms is defined
 
 - name: asserts | Option kafka_server_num_partitions
   ansible.builtin.assert:

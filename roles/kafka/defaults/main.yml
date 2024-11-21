@@ -25,6 +25,10 @@ kafka_console_log_output: 'stderr'
 # or leave an existing cluster ID unchanged.
 kafka_cluster_id: 'my-kafka-cluster'
 
+kafka_controllers:
+  - node_id: 1
+    host: localhost
+
 kafka_system_group_name: kafka
 kafka_system_user_name: kafka
 

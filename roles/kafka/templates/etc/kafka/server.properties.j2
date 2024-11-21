@@ -3,7 +3,16 @@ node.id={{ kafka_server_node_id }}
 {% if kafka_server_broker_rack is defined and kafka_server_broker_rack != '' %}
 broker.rack={{ kafka_server_broker_rack }}
 {% endif %}
-controller.quorum.voters=1@localhost:{{ kafka_port_control_plane }}
+{% if kafka_server_broker_id_generation_enable is defined %}
+broker.id.generation.enable={{ kafka_server_broker_id_generation_enable }}
+{% endif %}
+{% if kafka_server_broker_session_timeout_ms is defined %}
+broker.session.timeout.ms={{ kafka_server_broker_session_timeout_ms }}
+{% endif %}
+controller.quorum.voters={% for node in kafka_controllers %}
+{{ node.node_id }}@{{ node.host }}:{{ node.port | default(kafka_port_control_plane) }}{% if not loop.last %},{% endif %}
+{% endfor %}
+
 listeners=PLAINTEXT://:{{ kafka_port_clients }},CONTROLLER://:{{ kafka_port_control_plane }}
 inter.broker.listener.name=PLAINTEXT
 
