@@ -13,10 +13,10 @@ controller.quorum.voters={% for node in kafka_controllers %}
 {{ node.node_id }}@{{ node.host }}:{{ node.port | default(kafka_port_control_plane) }}{% if not loop.last %},{% endif %}
 {% endfor %}
 
-listeners=PLAINTEXT://:{{ kafka_port_clients }},CONTROLLER://:{{ kafka_port_control_plane }}
+listeners={{ (([ kafka_listener_broker ] if 'broker' in kafka_server_process_roles else []) + ([ kafka_listener_controller ] if 'controller' in kafka_server_process_roles else [])) | join(',') }}
 inter.broker.listener.name=PLAINTEXT
 
-advertised.listeners=PLAINTEXT://localhost:{{ kafka_port_clients }}
+advertised.listeners={% if "broker" in kafka_server_process_roles %}{{ kafka_broker_advertised_listen_address }}{% endif %}
 
 controller.listener.names=CONTROLLER
 

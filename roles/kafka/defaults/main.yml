@@ -10,6 +10,10 @@ kafka_scala_version: '2.13'
 
 # kafka_java_home: /usr/local/lib/jvm/custom-java-runtime
 
+kafka_broker_listen_address: ':9092'
+kafka_broker_advertised_listen_address: 'localhost:9092'
+kafka_controller_listen_address: ':9093'
+
 # See: https://developer.confluent.io/faq/apache-kafka/kafka-operations/
 kafka_port_clients: 9092
 kafka_port_control_plane: 9093

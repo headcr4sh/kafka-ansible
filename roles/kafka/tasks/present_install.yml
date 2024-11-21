@@ -70,6 +70,11 @@
     group: root
     state: link
 
+- name: install | Determine Kafka listener configuration
+  ansible.builtin.set_fact:
+    kafka_listener_broker: "PLAINTEXT://{{ kafka_broker_listen_address | default(':' + kafka_port_clients) }}"
+    kafka_listener_controller: "CONTROLLER://{{ kafka_controller_listen_address | default(':' + kafka_port_control_plane) }}"
+
 - name: install | Create configuration file server.properties in {{ kafka_config_dir_path }}
   ansible.builtin.template:
     src: templates/etc/kafka/server.properties.j2

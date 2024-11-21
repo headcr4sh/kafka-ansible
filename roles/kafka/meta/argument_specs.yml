@@ -33,6 +33,18 @@ argument_specs:
         type: list
         elements: str
         required: true
+      kafka_broker_listen_address:
+        description: Address to listen on for Kafka controller
+        type: str
+        required: false
+      kafka_broker_advertised_listen_address:
+        description: Address to advertise for Kafka controller
+        type: str
+        required: true
+      kafka_controller_listen_address:
+        description: Address to listen on for Kafka controller
+        type: str
+        required: false
       kafka_controllers:
         description: List of Kafka controller nodes
         type: list
