@@ -37,14 +37,15 @@ Environment=JAVA_HOME={{ kafka_java_home }}
 Environment=KAFKA_OPTS=-DZstdTempFolder=%T -Dorg.xerial.snappy.tempdir=%T
 EnvironmentFile=-{{ kafka_systemd_environment_file_path }}
 PassEnvironment=
-
+ExecStartPre=/bin/sh -c '{{ kafka_installation_prefix }}/bin/kafka-storage.sh format --cluster-id="${KAFKA_CLUSTER_ID}" --config="{{ kafka_server_properties_file.dest }}" --ignore-formatted'
 ExecStart={{ kafka_installation_prefix }}/bin/kafka-server-start.sh {{ kafka_server_properties_file.dest }}
 ExecStop={{ kafka_installation_prefix }}/bin/kafka-server-stop.sh
 
 Restart=on-failure
 
 PrivateTmp=yes
+
 [Install]
-Alias=kafka-broker.service
+Alias=kafka.service
 Alias=kafka-server.service
 WantedBy=multi-user.target
