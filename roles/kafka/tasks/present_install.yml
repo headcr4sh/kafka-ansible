@@ -97,14 +97,13 @@
   notify:
     - kafka_restart
 
-- name: install | Create symlink for LOG4J tools configuration
-  ansible.builtin.file:
-    src: "{{ kafka_log4j_configuration_file.dest }}"
+- name: install | Create LOG4J configuration file tools-log4j.properties in {{ kafka_config_dir_path }}
+  ansible.builtin.template:
+    src: templates/etc/kafka/tools-log4j.properties.j2
     dest: "{{ kafka_config_dir_path }}/tools-log4j.properties"
     owner: root
     group: root
     mode: u=rw,g=rw,o=r
-    state: link
 
 - name: install | Verify Kafka Version (after installation)
   ansible.builtin.shell:
