@@ -8,4 +8,7 @@ redpanda_console_redpanda_admin_api_enabled: false
 redpanda_console_metrics_namespace: console
 redpanda_console_logger_level: info
 redpanda_console_analytics_enabled: false
+
+redpanda_console_kafka_brokers:
+  - "localhost:9092"
 ...

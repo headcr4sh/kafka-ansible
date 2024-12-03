@@ -1,7 +1,5 @@
 ---
 - name: download | Create directory {{ kafka_cache_download_path }}
-  tags:
-    - kafka_download
   ansible.builtin.file:
     path: "{{ kafka_cache_download_path }}"
     owner: root
@@ -11,17 +9,12 @@
     state: directory
 
 - name: download | Check if Kafka package checksum exists
-  tags:
-    - kafka_download
   ansible.builtin.stat:
     path: "{{ kafka_downloaded_checksum_file_path }}"
-  register:
-    kafka_package_checksum_stat
+  register: kafka_package_checksum_stat
   when: kafka_package_checksum is not defined
 
 - name: download | GET Kafka package checksum
-  tags:
-    - kafka_download
   ansible.builtin.get_url:
     url: "{{ kafka_checksum_sha512_download_url }}"
     dest: "{{ kafka_downloaded_checksum_file_path }}"
@@ -37,8 +30,6 @@
   when: kafka_package_checksum is not defined and kafka_package_archive_checksum_gpg is defined
 
 - name: download | Convert Kafka package checksum
-  tags:
-    - kafka_download
   ansible.builtin.set_fact:
     kafka_package_checksum: "sha512:{{ kafka_package_archive_checksum_gpg_slurped.content | b64decode | ansible.builtin.regex_replace('(.+\\:)|([\\ \n])', '') | lower }}"
   failed_when: >-
@@ -46,8 +37,6 @@
   when: kafka_package_checksum is not defined and kafka_package_archive_checksum_gpg_slurped is defined
 
 - name: download | GET Kafka package
-  tags:
-    - kafka_download
   ansible.builtin.get_url:
     url: "{{ kafka_package_download_url }}"
     dest: "{{ kafka_downloaded_package_file_path }}"
@@ -55,4 +44,3 @@
     checksum: "{{ kafka_package_checksum }}"
     mode: u=rw-x,g=rw-x,o=r-x
     validate_certs: true
-...

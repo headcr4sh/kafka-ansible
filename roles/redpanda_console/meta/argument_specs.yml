@@ -12,6 +12,11 @@ argument_specs:
       redpanda_console_version:
         description: Version of Redpanda Console to Install
         type: str
+      redpanda_console_kafka_brokers:
+        description: List of Kafka brokers to connect to
+        type: list
+        elements: str
+        required: true
       redpanda_console_kafka_rack_id:
         description: |
           Kafka rack ID to use for Redpanda Console.

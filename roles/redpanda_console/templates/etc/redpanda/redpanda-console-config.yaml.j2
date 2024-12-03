@@ -4,7 +4,9 @@ kafka:
   # Brokers is a list of bootstrap servers with
   # port (for example "localhost:9092").
   brokers:
-    - "localhost:9092" # TODO Make this configurable
+    {% for broker in redpanda_console_kafka_brokers %}
+    - {{ broker | ansible.builtin.to_json }}
+    {% endfor %}
 {% if redpanda_console_kafka_rack_id is defined %}
   # In multi-zone Kafka clusters, you can reduce traffic costs
   # by consuming messages from replica brokers in the same zone.

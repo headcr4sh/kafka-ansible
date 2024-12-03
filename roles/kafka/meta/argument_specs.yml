@@ -1,7 +1,12 @@
 ---
 argument_specs:
   main:
-    short_description: Installs Apache Kafka.
+    short_description: Main entrypoint for the Kafka role.
+    description:
+      - This is the main entrypoint for the Kafka role.
+      - It installs Apache Kafka on the target node.
+    author:
+      - Benjamin P. Jung
     options:
       kafka_state:
         description: Desired state of the Kafka node installation
@@ -169,4 +174,3 @@ argument_specs:
           - DEBUG
           - TRACE
         default: INFO
-...
